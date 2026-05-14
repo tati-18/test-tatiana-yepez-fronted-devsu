@@ -1,0 +1,82 @@
+<div class="gt">
+  <div class="gt-toolbar" *ngIf="searchable">
+    <div class="gt-search">
+      <svg
+        class="gt-search-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <circle cx="11" cy="11" r="8" />
+        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+      </svg>
+      <input
+        class="gt-search-input"
+        type="text"
+        placeholder="Buscar..."
+        [(ngModel)]="searchTerm"
+        (input)="search()"
+      />
+    </div>
+  </div>
+
+  <div class="gt-loading" *ngIf="loading">
+    <div class="gt-spinner"></div>
+    <span>{{ 'general.loading' | translate }}</span>
+  </div>
+
+  <div class="gt-wrapper" *ngIf="!loading">
+    <table class="gt-table">
+      <thead class="gt__thead">
+        <tr>
+          <th *ngFor="let col of columns" class="gt-th">{{ col.header }}</th>
+          <th class="gt-th gt-th--actions">{{ 'general.actions' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody class="gt-tbody">
+        <tr *ngIf="filteredData.length === 0">
+          <td [colSpan]="columns.length + 1" class="gt-empty">
+            {{ 'general.noData' | translate }}
+          </td>
+        </tr>
+
+        <tr *ngFor="let row of filteredData" class="gt-tr">
+          <td *ngFor="let col of columns" class="gt-td">
+            <ng-container *ngIf="col.type === 'boolean'">
+              <span
+                class="gt-badge"
+                [class.gt-badge--active]="getValue(row, col.field)"
+                [class.gt-badge--inactive]="!getValue(row, col.field)"
+              >
+                {{
+                  getValue(row, col.field)
+                    ? ('general.active' | translate)
+                    : ('general.inactive' | translate)
+                }}
+              </span>
+            </ng-container>
+
+            <ng-container *ngIf="col.type === 'currency'">
+              {{ getValue(row, col.field) | currency: 'USD' : 'symbol' : '1.2-2' }}
+            </ng-container>
+
+            <ng-container *ngIf="col.type === 'date'">
+              {{ getValue(row, col.field) | date: 'dd/MM/yyyy' }}
+            </ng-container>
+
+            <ng-container *ngIf="!col.type || col.type === 'text'">
+              {{ getValue(row, col.field) }}
+            </ng-container>
+          </td>
+
+          <td class="gt-td gt-td--actions">
+            <button class="btn btn--sm btn--edit" (click)="onEdit.emit(row)">{{ 'general.edit' | translate }}</button>
+
+            <button class="btn btn--sm btn--delete" (click)="onDelete.emit(row)">{{ 'general.delete' | translate }}</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,19 @@
+{
+  "general": {
+    "bank": "Banco",
+    "loading": "Cargando...",
+    "noData": "No hay datos disponibles",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "actions": "Acciones",
+    "password": "Contraseña",
+    "telephone": "Teléfono",
+    "direccion": "Dirección",
+    "name": "Nombre",
+    "gender": "Género",
+    "age": "Edad",
+    "identification": "Identificación"
+  }
+}

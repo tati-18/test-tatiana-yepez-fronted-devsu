@@ -1,0 +1,24 @@
+<div class="page">
+
+  <div class="page__header">
+    <h1 class="page__title">Clientes</h1>
+    <button class="btn btn--primary" (click)="openCreate()">
+      Nuevo Cliente
+    </button>
+  </div>
+
+  <app-generic-table
+    [columns]="columns"
+    [data]="clients"
+    [loading]="loading"
+    (onEdit)="openEdit($event)"
+    (onDelete)="confirmDelete($event)"
+  />
+
+</div>
+
+<app-create-client-modal
+  [visible]="showForm"
+  [client]="selectedClient!"
+  (close)="showForm = false"
+></app-create-client-modal>
