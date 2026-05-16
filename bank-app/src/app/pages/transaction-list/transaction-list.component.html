@@ -1,1 +1,23 @@
-<p>transaction-list.component works!</p>
+<div class="page">
+  <div class="page__header">
+    <h1 class="page__title">{{ 'general.transactions' | translate }}</h1>
+    <button class="btn btn--primary" (click)="openCreate()">
+      {{ 'general.newTransaction' | translate }}
+    </button>
+  </div>
+
+  <app-generic-table
+    [columns]="columns"
+    [data]="transactions"
+    [loading]="loading"
+    (onEdit)="openEdit($event)"
+    (onDelete)="confirmDelete($event)"
+  />
+</div>
+
+<app-transaction-modal
+  [visible]="showForm"
+  [transaction]="selectedTransaction"
+  (save)="onSave($event)"
+  (close)="onFormClose(false)"
+/>

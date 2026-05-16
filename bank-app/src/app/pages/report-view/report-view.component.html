@@ -1,1 +1,244 @@
-<p>report-view.component works!</p>
+<div class="page">
+  <div class="page__header">
+    <h1 class="page__title">{{ 'reportView.title' | translate }}</h1>
+  </div>
+
+  <div class="report-container">
+    <section class="card">
+      <div class="card__header">
+        <span class="card__title">{{ 'reportView.parameters' | translate }}</span>
+      </div>
+
+      <form [formGroup]="filterForm" (ngSubmit)="onSearch()" class="filter-form" novalidate>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" for="clienteId">
+              {{ 'reportView.clientLabel' | translate }} <span class="required">*</span>
+            </label>
+
+            <select formControlName="clienteId">
+              <option [ngValue]="null" disabled>
+                {{ loadingClients ? 'Cargando...' : 'Seleccione un cliente' }}
+              </option>
+
+              <option *ngFor="let client of clients" [ngValue]="client.id">
+                {{ client.name }} — {{ client.identification }}
+              </option>
+            </select>
+
+            @if (isFieldInvalid('clienteId')) {
+              <span class="form-error">{{ 'reportView.selectClient' | translate }}</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="startDate">
+              {{ 'reportView.startDateLabel' | translate }} <span class="required">*</span>
+            </label>
+            <div class="input-wrapper" [class.input-error]="isFieldInvalid('startDate')">
+              <input id="startDate" type="date" formControlName="startDate" class="form-input" />
+            </div>
+            @if (isFieldInvalid('startDate')) {
+              <span class="form-error">{{ 'reportView.selectStartDate' | translate }}</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="endDate">
+              {{ 'reportView.endDateLabel' | translate }} <span class="required">*</span>
+            </label>
+            <div class="input-wrapper" [class.input-error]="isFieldInvalid('endDate')">
+              <input id="endDate" type="date" formControlName="endDate" class="form-input" />
+            </div>
+            @if (isFieldInvalid('endDate')) {
+              <span class="form-error">{{ 'reportView.selectEndDate' | translate }}</span>
+            }
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button
+            type="submit"
+            class="btn btn--sm btn--primary"
+            [disabled]="loadingReport() || loadingPdf()"
+          >
+            @if (loadingReport()) {
+              <span class="spinner"></span> {{ 'general.consult' | translate }}
+            } @else {
+              {{ 'reportView.searchButton' | translate }}
+            }
+          </button>
+
+          <button
+            type="button"
+            class="btn btn--sm btn--secondary"
+            [disabled]="loadingReport() || loadingPdf() || filterForm.invalid"
+            (click)="onDownloadPdf()"
+          >
+            @if (loadingPdf()) {
+              <span class="spinner spinner-dark"></span> {{ 'general.generateReport' | translate }}
+            } @else {
+              {{ 'reportView.downloadPdfButton' | translate }}
+            }
+          </button>
+
+          @if (searched()) {
+            <button type="button" class="btn btn--sm btn--primary" (click)="onReset()">
+              {{ 'reportView.cleanParameters' | translate }}
+            </button>
+          }
+        </div>
+      </form>
+    </section>
+
+    @if (errorMessage()) {
+      <div class="alert-error">{{ errorMessage() }}</div>
+    }
+
+    @if (loadingReport()) {
+      <div class="card">
+        <div class="card__skeleton">
+          <span class="card__skeleton-line card__skeleton-line--label">{{
+            'reportView.loadingReport' | translate
+          }}</span>
+          <div class="card__skeleton-line"></div>
+          <div class="card__skeleton-line card__skeleton-line--md"></div>
+          <div class="card__skeleton-line card__skeleton-line--sm"></div>
+        </div>
+      </div>
+    }
+
+    @if (!loadingReport() && reports().length > 0) {
+      <div class="results-section">
+        <div class="metrics-grid">
+          <div class="card card--flat">
+            <div class="card__body card__body--sm">
+              <div class="card__stat">
+                <span class="card__stat-label">{{ 'reportView.totalAccounts' | translate }}</span>
+                <span class="card__stat-value">{{ totalAccounts() }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        @for (reporte of reports(); track reporte.clienteId) {
+          <div class="card">
+            @for (account of reporte.accounts; track account.accountNumber) {
+              <div
+                class="account-card"
+                [class.account-card--expanded]="
+                  isAccountExpanded(accountKey(reporte.clienteId, account.accountNumber))
+                "
+              >
+                <div
+                  class="account-header"
+                  (click)="toggleAccount(accountKey(reporte.clienteId, account.accountNumber))"
+                >
+                  <div class="account-header-left">
+                    <div class="account-type-badge">{{ account.accountType }}</div>
+                    <div class="account-number">N° {{ account.accountNumber }}</div>
+                  </div>
+
+                  <div class="account-balances">
+                    <div class="balance-item">
+                      <span class="balance-label">{{
+                        'reportView.initialBalance' | translate
+                      }}</span>
+                      <span class="balance-value">{{
+                        formatCurrency(account.initialBalance)
+                      }}</span>
+                    </div>
+                    <div class="balance-separator"></div>
+                    <div class="balance-item">
+                      <span class="balance-label">{{ 'reportView.finalBalance' | translate }}</span>
+                      <span class="balance-value balance-value--current">{{
+                        formatCurrency(account.currentBalance)
+                      }}</span>
+                    </div>
+                    <div class="balance-separator"></div>
+                    <div class="balance-item">
+                      <span class="balance-label">{{ 'reportView.creditTotal' | translate }}</span>
+                      <span class="balance-value balance-value--credit"
+                        >+{{ formatCurrency(account.creditTotal) }}</span
+                      >
+                    </div>
+                    <div class="balance-separator"></div>
+                    <div class="balance-item">
+                      <span class="balance-label">{{ 'reportView.debitTotal' | translate }}</span>
+                      <span class="balance-value balance-value--debit"
+                        >-{{ formatCurrency(account.debitTotal) }}</span
+                      >
+                    </div>
+                  </div>
+                </div>
+
+                @if (isAccountExpanded(accountKey(reporte.clienteId, account.accountNumber))) {
+                  <div class="movements-panel">
+                    @if (account.movements.length === 0) {
+                      <div class="no-movements">{{ 'reportView.noMovements' | translate }}</div>
+                    } @else {
+                      <table class="movements-table">
+                        <thead>
+                          <tr>
+                            <th>{{ 'reportView.movementDate' | translate }}</th>
+                            <th>{{ 'reportView.movementType' | translate }}</th>
+                            <th class="text-right">
+                              {{ 'reportView.movementAmount' | translate }}
+                            </th>
+                            <th class="text-right">{{ 'reportView.finalBalance' | translate }}</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          @for (mov of account.movements; track mov.date + mov.amount) {
+                            <tr
+                              class="movement-row"
+                              [class.movement-row--credit]="mov.amount >= 0"
+                              [class.movement-row--debit]="mov.amount < 0"
+                            >
+                              <td class="td-date">{{ formatDate(mov.date) }}</td>
+
+                              <td>
+                                <span
+                                  class="transaction-badge"
+                                  [class.badge-credit]="mov.amount >= 0"
+                                  [class.badge-debit]="mov.amount < 0"
+                                >
+                                  {{ 'reportView.' + mov.transactionType | translate }}
+                                </span>
+                              </td>
+
+                              <td
+                                class="text-right td-amount"
+                                [class.amount-credit]="mov.amount >= 0"
+                                [class.amount-debit]="mov.amount < 0"
+                              >
+                                {{ mov.amount >= 0 ? '+' : '' }}{{ formatCurrency(mov.amount) }}
+                              </td>
+
+                              <td class="text-right td-balance">
+                                {{ formatCurrency(mov.balance) }}
+                              </td>
+                            </tr>
+                          }
+                        </tbody>
+                      </table>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+
+    @if (!loadingReport() && searched() && reports().length === 0 && !errorMessage()) {
+      <div class="card">
+        <div class="card__empty">
+          <h3>{{ 'reportView.noResults' | translate }}</h3>
+          <p>{{ 'reportView.noMovements' | translate }}</p>
+        </div>
+      </div>
+    }
+  </div>
+</div>

@@ -20,5 +20,6 @@
 <app-create-client-modal
   [visible]="showForm"
   [client]="selectedClient!"
-  (close)="showForm = false"
-></app-create-client-modal>
+  (save)="onSave($event)"
+  (close)="onFormClose(false)"
+/>

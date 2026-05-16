@@ -1,1 +1,21 @@
-<p>account-list.component works!</p>
+<div class="page">
+  <div class="page__header">
+    <h1 class="page__title">{{ 'accountList.title' | translate }}</h1>
+    <button class="btn btn--primary" (click)="openCreate()">{{ 'accountList.newAccount' | translate }}</button>
+  </div>
+
+  <app-generic-table
+    [columns]="columns"
+    [data]="accounts"
+    [loading]="loading"
+    (onEdit)="openEdit($event)"
+    (onDelete)="confirmDelete($event)"
+  />
+</div>
+
+<app-account-modal
+  [visible]="showForm"
+  [account]="selectedAccount"
+  (save)="onSave($event)"
+  (close)="onFormClose(false)"
+/>

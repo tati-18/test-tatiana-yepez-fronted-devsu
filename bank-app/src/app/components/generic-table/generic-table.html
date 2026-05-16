@@ -31,7 +31,6 @@
       <thead class="gt__thead">
         <tr>
           <th *ngFor="let col of columns" class="gt-th">{{ col.header }}</th>
-          <th class="gt-th gt-th--actions">{{ 'general.actions' | translate }}</th>
         </tr>
       </thead>
       <tbody class="gt-tbody">
@@ -70,11 +69,6 @@
             </ng-container>
           </td>
 
-          <td class="gt-td gt-td--actions">
-            <button class="btn btn--sm btn--edit" (click)="onEdit.emit(row)">{{ 'general.edit' | translate }}</button>
-
-            <button class="btn btn--sm btn--delete" (click)="onDelete.emit(row)">{{ 'general.delete' | translate }}</button>
-          </td>
         </tr>
       </tbody>
     </table>

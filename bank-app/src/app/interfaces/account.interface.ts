@@ -1,10 +1,22 @@
+import { Client } from "./client.interface";
+
 export interface Account {
-  accountId: number;
+  id: number;
   accountNumber: string;
   clientId: number;
-  balance: number;
+  initialBalance: number;
   accountType: AccountType;
   status: boolean;
 }
 
-export type AccountType = 'savings' | 'checking' | 'investment';
+export interface AccountResponse {
+  id: number;
+  accountNumber: string;
+  clientId: number;
+  initialBalance: number;
+  accountType: AccountType;
+  status: boolean;
+  client: Client;
+}
+
+export type AccountType = 'CREDIT' | 'DEBIT';

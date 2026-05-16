@@ -2,24 +2,24 @@
   <div class="modal">
     <div class="modal__header">
       <h2 class="modal__title">
-        {{ client.clientId ? 'Editar Cliente' : 'Nuevo Cliente' }}
+        {{ client?.identification ? 'Editar Cliente' : 'Nuevo Cliente' }}
       </h2>
-
       <button class="modal__close" (click)="onClose()">✕</button>
     </div>
 
     <div class="modal__body">
-      <div class="form-grid">
+      <form [formGroup]="form" class="form-grid">
         <div class="form-group">
           <label>Nombre</label>
-
-          <input type="text" [(ngModel)]="client.name" />
+          <input type="text" formControlName="name" />
+          <span class="form-error" *ngIf="isInvalid('name')">
+            {{ getError(form.get('name')) }}
+          </span>
         </div>
 
         <div class="form-group">
           <label>Género</label>
-
-          <select [(ngModel)]="client.gender">
+          <select formControlName="gender">
             <option value="M">Masculino</option>
             <option value="F">Femenino</option>
           </select>
@@ -27,47 +27,56 @@
 
         <div class="form-group">
           <label>Edad</label>
-
-          <input type="number" [(ngModel)]="client.age" />
+          <input type="number" formControlName="age" />
+          <span class="form-error" *ngIf="isInvalid('age')">
+            {{ getError(form.get('age')) }}
+          </span>
         </div>
 
         <div class="form-group">
           <label>Identificación</label>
-
-          <input type="text" [(ngModel)]="client.identification" />
+          <input type="text" formControlName="identification" />
+          <span class="form-error" *ngIf="isInvalid('identification')">
+            {{ getError(form.get('identification')) }}
+          </span>
         </div>
 
         <div class="form-group">
           <label>Dirección</label>
-
-          <input type="text" [(ngModel)]="client.address" />
+          <input type="text" formControlName="address" />
+          <span class="form-error" *ngIf="isInvalid('address')">
+            {{ getError(form.get('address')) }}
+          </span>
         </div>
 
         <div class="form-group">
           <label>Teléfono</label>
-
-          <input type="text" [(ngModel)]="client.phone" />
+          <input type="text" formControlName="phone" />
+          <span class="form-error" *ngIf="isInvalid('phone')">
+            {{ getError(form.get('phone')) }}
+          </span>
         </div>
 
         <div class="form-group">
           <label>Contraseña</label>
-
-          <input type="password" [(ngModel)]="client.password" />
+          <input type="password" formControlName="password" />
+          <span class="form-error" *ngIf="isInvalid('password')">
+            {{ getError(form.get('password')) }}
+          </span>
         </div>
 
         <div class="form-group form-group--checkbox">
           <label>
-            <input type="checkbox" [(ngModel)]="client.status" />
+            <input type="checkbox" formControlName="status" />
             Activo
           </label>
         </div>
-      </div>
+      </form>
     </div>
 
     <div class="modal__footer">
-      <button class="btn btn--sm btn--cancel"  (click)="onClose()">Cancelar</button>
-
-      <button class="btn btn--sm btn--edit"(click)="onSave()">Guardar</button>
+      <button class="btn btn--sm btn--secondary" (click)="onClose()">Cancelar</button>
+      <button class="btn btn--sm btn--primary" (click)="onSave()">Guardar</button>
     </div>
   </div>
 </div>

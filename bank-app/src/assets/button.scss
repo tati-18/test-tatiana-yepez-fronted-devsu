@@ -1,0 +1,100 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+
+  padding: 0.65rem 1.2rem;
+
+  border: none;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid transparent;
+
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: var(--font-family);
+
+  cursor: pointer;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  &--sm {
+    padding: 0.55rem 1rem;
+  }
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &--primary {
+    background: var(--color-primary);
+    color: var(--color-white);
+    border: 1px solid var(--color-primary);
+
+    &:hover {
+      background: var(--color-primary-hover);
+      border-color: var(--color-primary-hover);
+      box-shadow: 0 4px 12px var(--color-primary-shadow);
+    }
+  }
+}
+
+.btn--delete {
+  background: var(--color-danger-light);
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger-border);
+
+  &:hover {
+    background: var(--color-danger);
+    color: var(--color-white);
+    box-shadow: 0 4px 12px var(--color-danger-shadow);
+  }
+}
+
+.btn--save {
+  background: var(--color-success-light);
+  color: var(--color-success);
+  border: 1px solid var(--color-success-border);
+
+  &:hover {
+    background: var(--color-success);
+    color: var(--color-white);
+    box-shadow: 0 4px 12px var(--color-success-shadow);
+  }
+}
+
+.btn--secondary {
+  background: var(--color-secondary-light);
+  color: var(--color-secondary);
+  border: 1px solid var(--color-secondary-border);
+
+  &:hover {
+    background: var(--color-secondary);
+    color: var(--color-white);
+    box-shadow: 0 4px 12px var(--color-secondary-shadow);
+  }
+
+  .btn--primary {
+    background: var(--color-primary);
+    color: var(--color-white);
+    border: 1px solid var(--color-primary);
+    &:hover {
+      background: var(--color-danger);
+      color: var(--color-white);
+      box-shadow: 0 4px 12px var(--color-danger-shadow);
+    }
+  }
+}

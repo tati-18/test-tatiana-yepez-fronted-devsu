@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GenericTableComponent } from '../../components/generic-table/generic-table';
 import { ClientService } from '../../services/clients.service';
@@ -15,6 +15,7 @@ import { CreateClientModal } from '../../components/create-client-modal/create-c
 })
 export class ClientListComponent implements OnInit {
   private clientService = inject(ClientService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   clients: Client[] = [];
   loading = false;
@@ -41,6 +42,7 @@ export class ClientListComponent implements OnInit {
       next: (res) => {
         this.clients = res.data;
         this.loading = false;
+        this.cdr.detectChanges();
       },
       error: () => {
         this.loading = false;
@@ -48,8 +50,21 @@ export class ClientListComponent implements OnInit {
     });
   }
 
+  readonly emptyClient: Client = {
+    id: 0,
+    clientId: 0,
+    name: '',
+    gender: 'M',
+    age: 18,
+    identification: '',
+    address: '',
+    phone: '',
+    password: '',
+    status: true,
+  };
+
   openCreate(): void {
-    this.selectedClient = null;
+    this.selectedClient = { ...this.emptyClient };
     this.showForm = true;
   }
 
@@ -58,10 +73,17 @@ export class ClientListComponent implements OnInit {
     this.showForm = true;
   }
 
-  confirmDelete(client: Client): void {
-    if (!confirm(`¿Eliminar a ${client.name}?`)) return;
-    this.clientService.delete(client.clientId).subscribe({
-      next: () => this.loadClients(),
+  confirmDelete(client: Client): void {}
+
+  onSave(client: Client): void {
+    this.loading = true;
+    this.clientService.create(client).subscribe({
+      next: () => {
+        this.onFormClose(true);
+      },
+      error: (err) => {
+        this.loading = false;
+      },
     });
   }
 

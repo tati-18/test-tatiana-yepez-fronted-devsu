@@ -1,0 +1,65 @@
+<div class="modal-backdrop" *ngIf="visible">
+  <div class="modal">
+    <div class="modal__header">
+      <h2 class="modal__title">
+        {{ account?.accountNumber ? 'Editar Cuenta' : 'Nueva Cuenta' }}
+      </h2>
+      <button class="modal__close" (click)="onClose()">✕</button>
+    </div>
+
+    <div class="modal__body">
+      <form [formGroup]="form" class="form-grid">
+        <div class="form-group">
+          <label>Número de Cuenta</label>
+          <input type="text" formControlName="accountNumber" />
+          <span class="form-error" *ngIf="isInvalid('accountNumber')">
+            {{ getError(form.get('accountNumber')) }}
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label>Tipo de Cuenta</label>
+          <select formControlName="accountType">
+            <option value="savings">Ahorros</option>
+            <option value="checking">Corriente</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Saldo Inicial</label>
+          <input type="number" formControlName="initialBalance" />
+          <span class="form-error" *ngIf="isInvalid('initialBalance')">
+            {{ getError(form.get('initialBalance')) }}
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label>Cliente</label>
+          <select formControlName="clientId">
+            <option [ngValue]="null" disabled>
+              {{ loadingClients ? 'Cargando...' : 'Seleccione un cliente' }}
+            </option>
+            <option *ngFor="let client of clients" [ngValue]="client.id">
+              {{ client.name }} — {{ client.identification }}
+            </option>
+          </select>
+          <span class="form-error" *ngIf="isInvalid('clientId')">
+            {{ getError(form.get('clientId')) }}
+          </span>
+        </div>
+
+        <div class="form-group form-group--checkbox">
+          <label>
+            <input type="checkbox" formControlName="status" />
+            Activo
+          </label>
+        </div>
+      </form>
+    </div>
+
+    <div class="modal__footer">
+      <button class="btn btn--sm btn--secondary" (click)="onClose()">Cancelar</button>
+      <button class="btn btn--sm btn--primary" (click)="onSave()">Guardar</button>
+    </div>
+  </div>
+</div>

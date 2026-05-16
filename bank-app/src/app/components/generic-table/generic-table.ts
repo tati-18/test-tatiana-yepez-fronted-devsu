@@ -16,6 +16,7 @@ export class GenericTableComponent<T extends Record<string, any>> implements OnC
   @Input() data: T[] = [];
   @Input() loading: boolean = false;
   @Input() searchable: boolean = true;
+  @Input() showActions: boolean = true;
 
   @Output() onEdit = new EventEmitter<T>();
   @Output() onDelete = new EventEmitter<T>();

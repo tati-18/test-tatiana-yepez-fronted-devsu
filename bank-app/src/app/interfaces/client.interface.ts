@@ -1,7 +1,7 @@
-import { Person } from "./person.interface";
+import { Person } from './person.interface';
 
 export interface Client extends Person {
-    clientId: number;
-    password: string;
-    status: boolean;
+  clientId: number;
+  password: string;
+  status: boolean;
 }
